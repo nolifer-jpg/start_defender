@@ -61,9 +61,18 @@ pen.hideturtle()
 pen.up()
 pen.color("black")
 pen.goto(0, 260)
-pen.write("Score: 0", align="center", font=("Courier", 24, "normal"))
 
 score = 0
+high_score = 0
+pen.write(
+    f"Score: 0 High Score: {high_score}", align="center", font=("Courier", 24, "normal")
+)
+
+try:
+    with open("highscore.txt", "r") as file:
+        high_score = int(file.read())
+except FileNotFoundError:
+    high_score = 0
 
 # VILLAIN Setup
 enemy = turtle.Turtle()
@@ -98,6 +107,10 @@ while game_is_on:
         enemy.sety(y)
 
     if enemy.ycor() < -240:
+        if score > high_score:
+            high_score = score
+            with open("highscore.txt", "w") as file:
+                file.write(str(high_score))
         pen.goto(0, 0)
         pen.color("red")
         pen.write("GAME OVER", align="center", font=("Courier", 40, "bold"))
@@ -115,7 +128,11 @@ while game_is_on:
             pen.clear()
             pen.color("black")
             pen.goto(0, 260)
-            pen.write(f"Score: {score}", align="center", font=("Courier", 24, "normal"))
+            pen.write(
+                f"Score: {score}  High Score: {high_score}",
+                align="center",
+                font=("Courier", 24, "normal"),
+            )
 
             bullet.hideturtle()
             bullet_state = "ready"
@@ -129,3 +146,5 @@ while game_is_on:
                 enemy_speed += 0.2
             else:
                 enemy_speed -= 0.2
+
+screen.mainloop()
